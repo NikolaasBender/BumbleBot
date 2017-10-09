@@ -1,0 +1,5 @@
+How to remotely put code on the raspi
+https://www.raspberrypi.org/documentation/remote-access/ssh/scp.md
+
+Moving files between directories from comandline
+https://askubuntu.com/questions/172629/how-do-i-move-all-files-from-one-folder-to-another-using-the-command-line
