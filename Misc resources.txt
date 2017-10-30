@@ -3,3 +3,33 @@ https://www.raspberrypi.org/documentation/remote-access/ssh/scp.md
 
 Moving files between directories from comandline
 https://askubuntu.com/questions/172629/how-do-i-move-all-files-from-one-folder-to-another-using-the-command-line
+
+ultrasound sensor
+https://tutorials-raspberrypi.com/raspberry-pi-ultrasonic-sensor-hc-sr04/
+
+open cv getting started
+https://www.youtube.com/watch?v=jvFM-gIGpQQ
+
+Distance sensing
+https://www.modmypi.com/blog/hc-sr04-ultrasonic-range-sensor-on-the-raspberry-pi
+
+Multi Threading
+https://www.tutorialspoint.com/python3/python_multithreading.htm
+
+Math for figuring out how far the robot moves
+
+	100% 12v = 50rpm
+	100% = 50rpm
+
+	d = 10cm
+	c = 10pi cm
+
+	1 min 500pi cm
+
+	60sec 500pi cm
+
+	1 cm (60/(500pi))sec
+
+
+
+

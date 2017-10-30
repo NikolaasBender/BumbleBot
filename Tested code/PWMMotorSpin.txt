@@ -1,0 +1,11 @@
+# Import required libraries
+import sys
+import time
+import RPi.GPIO as GPIO
+
+# Use BCM GPIO references
+# instead of physical pin numbers
+GPIO.setmode(GPIO.BCM)
+mode=GPIO.getmode()
+print " mode ="+str(mode)
+GPIO.cleanup()

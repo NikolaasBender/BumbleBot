@@ -3,7 +3,7 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(26, GPIO.OUT)
 
-#channel 26 at 50hz
+#channel 26 at 100hz
 p = GPIO.PWM(26, 100)
 p.start(0)
 try:
