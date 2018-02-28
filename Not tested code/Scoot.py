@@ -1,0 +1,29 @@
+#THIS IS ALL STANDARD IMPORT STUFF FOR
+#DOING THIS KIND OF WORK
+import sys
+import time
+import RPi.GPIO as GPIO
+
+#THIS SETS UP THE GPIO PIN NUMBERING SYSTEM
+#THIS IS CONSISTANT ACROSS ALL OF THE FILES
+#IN THIS PROJECT
+GPIO.setmode(GPIO.BCM)
+
+#THESE ARE MY SPECIALLY MADE CLASSES 
+#FOR USING THE MOTORS AND SENSORS
+import moovit.py as moo
+import feely.py as fel
+
+moo.setup() #PUT NUMBERS IN THESE
+fel.setup()
+
+while():
+	if(fel.stairCheck() == false)
+		#YOU NEED TO MAKE A WALL CHECK FUNCTION IN FEELY
+		#IT SHOULD RETURN 0-3 TO DECIDE WHERE TO GO
+		if(fel.wall() == 0)
+			moo.goFor()
+
+	else
+		moo.goBak()
+		
