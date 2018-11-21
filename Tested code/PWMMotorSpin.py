@@ -20,34 +20,33 @@ GPIO.setup(BackwardL, GPIO.OUT)
 GPIO.setup(ForwardR, GPIO.OUT)
 GPIO.setup(BackwardR, GPIO.OUT)
 
-FL = GPIO.PWM(26, 100)
-BL = GPIO.PWM(19, 100)
-FR = GPIO.PWM(13, 100)
-BR = GPIO.PWM(6, 100)
+FL = GPIO.PWM(ForwardL, 100)
+BL = GPIO.PWM(BackwardL, 100)
+FR = GPIO.PWM(ForwardR, 100)
+BR = GPIO.PWM(BackwardR, 100)
 FL.start(0)
 BL.start(0)
 FR.start(0)
 BR.start(0)
 
-t = 0.2
+t = 3
+dc = 100
 
-for dc in range(0, 101, 1):
-	FL.ChangeDutyCycle(dc)
-	FR.ChangeDutyCycle(dc)
-	time.sleep(t)
-for dc in range(100, -1, -1):
-	FL.ChangeDutyCycle(dc)
-	FR.ChangeDutyCycle(dc)
-	time.sleep(t)
+#SPIN FORWARDS
+FL.ChangeDutyCycle(dc)
+FR.ChangeDutyCycle(dc)
+time.sleep(t)
 	
-for dc in range(0, 101, 1):
-	BL.ChangeDutyCycle(dc)
-	BR.ChangeDutyCycle(dc)
-	time.sleep(t)
-for dc in range(100, -1, -1):
-	BL.ChangeDutyCycle(dc)
-	BR.ChangeDutyCycle(dc)
-	time.sleep(t)
+#STOP ALL
+FL.ChangeDutyCycle(0)
+FR.ChangeDutyCycle(0)
+BL.ChangeDutyCycle(0)
+BR.ChangeDutyCycle(0)
+
+#SPIN BACK
+BL.ChangeDutyCycle(dc)
+BR.ChangeDutyCycle(dc)
+time.sleep(t)
 
 FL.stop()
 BL.stop()
