@@ -48,8 +48,8 @@ BR.start(0)
 # TRIG = 26
 # ECHO = 19
 
-# GPIO.setup(TRIG,GPIO.OUT)
-# GPIO.setup(ECHO,GPIO.IN)
+GPIO.setup(TRIG,GPIO.OUT)
+GPIO.setup(ECHO,GPIO.IN)
 
 #THIS IS FOR DISTANCE SENSING
 tot = 0

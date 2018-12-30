@@ -20,6 +20,13 @@ int 2sens = 0;
 void setup() {
   // initialize serial communications at 9600 bps:
   Serial.begin(9600);
+  pinMode(bat0, INPUT);
+  pinMode(bat1, INPUT);
+  pinMode(bat2, INPUT);
+  
+  pinMode(enable15, OUTPUT);
+  pinMode(enable25, OUTPUT);
+  
   digitalWrite(enable, HIGH);
 }
 
