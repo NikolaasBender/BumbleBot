@@ -6,6 +6,10 @@
 	#right motor doesn't want to spin and left motor spins backwards with motor
 	#controller getting really hot. No issues with motor calibration, even weirder
 
+	#12/31/18 rev: GARRY || Garry goes! Bumble mini moves consistently and finds
+	#its way with relative ease. Full bumblebot will need more sensors to make sure
+	#its doesn't back over a stair or turn over a stair. The robot eats so 
+	#much power too, I'm happy I have this giant lithium battery in the works. 
 
 #from gpiozero import Motor, Button
 from time import sleep,time
@@ -263,6 +267,9 @@ try:
 			ld = get_wall(ls)
 			rd = get_wall(rs)
 
+			if debugmode == 1:
+				print(ld, md, rd)
+
 			#MIDDLE HARDWARE BUTTON
 			if md <= wall:
 				if debugmode == 1:
@@ -274,6 +281,42 @@ try:
 				sleep(dist + extraTurn)
 				ranNewDir()
 
+
+			#LEFT SIDE IS CLOSER TO A WALL
+			if ld < rd and ld <= wall and rd <= wall:
+				if debugmode == 1:
+					print("LEFT BUTTON PUSHED! GO RIGHT")
+
+				#p.start()
+				Rspin(speed, 0)
+				#GIVE 'ER MORE TURN BUD!
+				sleep(dist + extraTurn)
+
+
+
+
+			#RIGHT SIDE IS CLOSER TO A WALL
+			if rd < ld and ld <= wall and rd <= wall:
+				if debugmode == 1:
+					print("RIGHT BUTTON PUSHED! GO LEFT!")
+
+				#p.start()
+				Lspin(speed, 0)
+				#GIVE 'ER MORE TURN BUD!
+				sleep(dist + extraTurn)
+
+
+
+
+			#WALL DISTANCES ARE EQUAL
+			if rd == ld and ld <= wall and rd <= wall:
+				if debugmode == 1:
+					print("EQUAL DISTANCES, CHOSING RANDOM NEW DIRECTION")
+
+				Bspin(dist, 0)
+				ranNewDir()
+
+
 			#RIGHT HARDWARE BUTTON
 			if rd <= wall:
 				if debugmode == 1:
@@ -284,6 +327,8 @@ try:
 				#GIVE 'ER MORE TURN BUD!
 				sleep(dist + extraTurn)
 
+
+
 			#LEFT HARDWARE BUTTON 
 			if ld <= wall:
 				if debugmode == 1:
@@ -293,6 +338,9 @@ try:
 				Rspin(speed, 0)
 				#GIVE 'ER MORE TURN BUD!
 				sleep(dist + extraTurn)
+
+
+
 			
 			if debugmode == 1:
 				print("GOING FORWARD")
