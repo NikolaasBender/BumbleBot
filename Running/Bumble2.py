@@ -13,6 +13,7 @@
 
 #from gpiozero import Motor, Button
 from time import sleep,time
+import datetime
 import random
 import os
 import multiprocessing as mp
@@ -22,7 +23,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.cleanup()
 
 #THIS IS TO ACTIVATE OR DEACTIVATE PRINT STATEMENTS
-debugmode = 1
+debugmode = 0
 
 #THE SIZE OF THE WHEELS IN MM
 ws = 64
@@ -42,15 +43,6 @@ wall = 0.3
 
 #SETTING UP CAMERA STUFF
 piccount = 0
-
-
-#THIS IS A DIAGRAM OF THE PINOUTS
-# https://gpiozero.readthedocs.io/en/stable/_images/pin_layout.svg
-#SETUP MOTORS
-# Lmotor = Motor(forward=26, backward=19)
-# Rmotor = Motor(forward=13, backward=6)
-
-
 
 
 #MOTOR SETUP
@@ -115,9 +107,15 @@ def disT(speed):
 #THIS TAKES A PHOTO
 #=============================================================================
 def snap():
-	# cmd = "streamer -f jpeg -o /home/pi/images/$DATE. " + string(time()) + ".jpeg"
-	# os.system(cmd)
-	return
+	while True:
+		file = datetime.datetime.now().strftime('%Y-%m-%d_%I:%M:%S%p') + ".jpeg"
+		pic = "streamer -q -s 128x128 -o images/" + file
+		bw = "bw.cpp " + file
+		cmd = pic + "&&" + bw
+		os.system(cmd)
+
+		sleep(2)
+	
 	
 #=============================================================================
 #THIS GETS THE DISTANCE FROM THE ULTRASOUND SENSORS
@@ -242,13 +240,11 @@ def ranNewDir():
 #THIS IS THE MAIN LOOP
 #=============================================================================
 try:
+	#THIS JUST TAKES PHOTOS EVERY 2 SECONDS AND SAVES THEM
+	#IT RUNS INDEPENDENTLY OF EVERYTHING ELSE
+	p = mp.Process(target = snap)
+	p.start()
 	while True:
-
-
-		p = mp.Process(target = snap)
-		p.start()
-		
-
 
 		#NO STAIR ALL IS GOOD
 		depth = get_wall(ds)
@@ -381,3 +377,5 @@ except:
 
 finally:
 	GPIO.cleanup()
+	p.terminate()
+	exit()
