@@ -133,11 +133,11 @@ class gpControl(object):
 		#VALUE IS A TUPLE
 		for value in self.abs_state.items():
 			#output_string += key + ':' + '{:>4}'.format(str(value) + ' ')
-			output.append(value[1])
+			output.append(value)
 
 		for value in self.btn_state.items():
 			#output_string += key + ':' + str(value) + ' '
-			output.append(value[1])
+			output.append(value)
 
 		#print(type(output))
 		return output #, output_string
@@ -167,7 +167,7 @@ Lmotor = Motor(forward=26, backward=19)
 Rmotor = Motor(forward=13, backward=6)
 
 
-last = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+last = []
 
 def rC(ctrl):
 	global last
@@ -175,30 +175,45 @@ def rC(ctrl):
 	#   0      1       2        3        4        5      6     7      8
 	#[dpadX, dpadY, lstickY, lstickX, rstickY, rstickX, Xbtn, Abtn, Bbtn]
 	#THERES MORE BUT I THINK THIS IS ALL I NEED
-	if ctrl[0] == 1:
+	xpo = ('HX', 1)
+	xz = ('HX', 0)
+	xno = ('HX', -1)
+	ypo = ('HY', 1)
+	yz = ('HY', 0)
+	yno = ('HY', -1)
+	ao = ('E', 1)
+	az = ('E', 0)
+
+	if xpo in ctrl:
 		Lmotor.forward(speed)
 		Rmotor.stop()
-	if ctrl[0] == -1:
+	if xno in ctrl:
 		Rmotor.forward(speed)
 		Lmotor.stop()
-	if ctrl[1] == -1:
+	if yno in ctrl or ( (((yno and xpo) in last) or ((yno and xno) in last)) and (xpo not in ctrl and xno not in ctrl) ):
 		Rmotor.forward(speed)
 		Lmotor.forward(speed)
-	if ctrl[1] == 1:
+	if ypo in ctrl:
 		Rmotor.backward(speed)
 		Lmotor.backward(speed)
-	if ctrl[7] == 1:
+	if ao in ctrl:
 		print("click!")
 		snap()
-	if ctrl[8] == 1:
-		print("!!!!!!!!!!!!!!!AUTO PILOT ENGAGED!!!!!!!!!!!!!!!")
-		autoPilot()
-	if ctrl[0] == 0 and last[0] != 0:
+	# if ctrl[8] == 1:
+	# 	print("!!!!!!!!!!!!!!!AUTO PILOT ENGAGED!!!!!!!!!!!!!!!")
+	# 	autoPilot()
+	if xz in ctrl and xz not in last:
 		Lmotor.stop()
 		Rmotor.stop()
-	if ctrl[1] == 0 and last[1] != 0:
+	if yz in ctrl and yz not in last:
 		Lmotor.stop()
 		Rmotor.stop()
+	if yno in ctrl and xpo in ctrl:
+		Rmotor.forward(speed*0.6)
+		Lmotor.forward(speed)
+	if yno in ctrl and xno in ctrl:
+		Rmotor.forward(speed)
+		Lmotor.forward(speed*0.6)
 
 	last = ctrl
 	return 

@@ -108,11 +108,13 @@ def disT(speed):
 #=============================================================================
 def snap():
 	while True:
-		file = datetime.datetime.now().strftime('%Y-%m-%d_%I:%M:%S%p') + ".jpeg"
+		file = datetime.datetime.now().strftime('%Y-%m-%d_%I-%M-%S%p') + ".jpeg"
 		pic = "streamer -q -s 128x128 -o images/" + file
-		bw = "bw.cpp " + file
-		cmd = pic + "&&" + bw
+		#bw = "bw.cpp " + file
+		cmd = pic #+ "&&" + bw
 		os.system(cmd)
+		# move = "sshpass -p PASSWORD scp " + file + " you@computer:/Pictures/data/"
+		# os.system(move)
 
 		sleep(2)
 	
@@ -198,6 +200,8 @@ def Rspin(dutyCycle, direction):
 		BR.ChangeDutyCycle(dutyCycle * 100)
 
 
+
+
 def Bspin(dutyCycle, direction):
 	clear()
 	if direction == 1:
@@ -244,6 +248,7 @@ try:
 	#IT RUNS INDEPENDENTLY OF EVERYTHING ELSE
 	p = mp.Process(target = snap)
 	p.start()
+	cturn = 0
 	while True:
 
 		#NO STAIR ALL IS GOOD
@@ -266,6 +271,8 @@ try:
 			if debugmode == 1:
 				print(ld, md, rd)
 
+			cturn = 0
+
 			#MIDDLE HARDWARE BUTTON
 			if md <= wall:
 				if debugmode == 1:
@@ -274,7 +281,7 @@ try:
 				#p.start()
 				Bspin(speed, 0)
 				#GIVE 'ER MORE TURN BUD!
-				sleep(dist + extraTurn)
+				sleep(dist + 2)
 				ranNewDir()
 
 
@@ -287,6 +294,7 @@ try:
 				Rspin(speed, 0)
 				#GIVE 'ER MORE TURN BUD!
 				sleep(dist + extraTurn)
+				cturn = 1
 
 
 
@@ -300,21 +308,23 @@ try:
 				Lspin(speed, 0)
 				#GIVE 'ER MORE TURN BUD!
 				sleep(dist + extraTurn)
+				cturn = 1
 
 
 
 
 			#WALL DISTANCES ARE EQUAL
-			if rd == ld and ld <= wall and rd <= wall:
+			if rd <= ld * 1.1 and rd >= ld * 0.9 and ld <= wall and rd <= wall:
 				if debugmode == 1:
 					print("EQUAL DISTANCES, CHOSING RANDOM NEW DIRECTION")
 
-				Bspin(dist, 0)
+				Bspin(speed, 0)
+				sleep(dist + 3)
 				ranNewDir()
 
 
 			#RIGHT HARDWARE BUTTON
-			if rd <= wall:
+			if rd <= wall and cturn == 0: 
 				if debugmode == 1:
 					print("RIGHT BUTTON PUSHED! GO LEFT!")
 
@@ -326,7 +336,7 @@ try:
 
 
 			#LEFT HARDWARE BUTTON 
-			if ld <= wall:
+			if ld <= wall and cturn == 0:
 				if debugmode == 1:
 					print("LEFT BUTTON PUSHED! GO RIGHT")
 
