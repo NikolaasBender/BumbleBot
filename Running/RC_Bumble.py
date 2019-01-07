@@ -190,7 +190,7 @@ def rC(ctrl):
 	if xno in ctrl:
 		Rmotor.forward(speed)
 		Lmotor.stop()
-	if yno in ctrl or ( (((yno and xpo) in last) or ((yno and xno) in last)) and (xpo not in ctrl and xno not in ctrl) ):
+	if yno in ctrl:
 		Rmotor.forward(speed)
 		Lmotor.forward(speed)
 	if ypo in ctrl:
