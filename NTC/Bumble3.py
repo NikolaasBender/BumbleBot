@@ -18,13 +18,6 @@ ds = Sensor(20,21)
 rm = Motor(13, 6)
 lm = Motor(26, 19)
 
-print("SETUP COMPLETE")
-print(debugmode)
-print(ws)
-print(rpm)
-print(chkDst)
-print(stairSens)
-print(wall)
 
 #=============================================================================
 #THIS IS THE MAIN LOOP

@@ -33,7 +33,7 @@ def create_training_data():
 		#ITERATE THROUGH EACH IMAGE
 		for img in tqdm(os.listdir(path)):  
 			try:
-				img_array = cv2.imread(os.path.join(path,img) ,cv2.IMREAD_GRAYSCALE)  # convert to array
+				img_array = cv2.imread(os.path.join(path,img), cv2.IMREAD_GRAYSCALE)  # convert to array
 				new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))  # resize to normalize data size
 				training_data.append([new_array, class_num])  # add this to our training_data
 			except Exception as e:  # in the interest in keeping the output clean...

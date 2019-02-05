@@ -1,9 +1,6 @@
-import os
-from gpiozero import Motor
 from time import sleep
 from inputs import get_gamepad
 import inputs
-import datetime
 
 
 EVENT_ABB = (
@@ -66,13 +63,16 @@ class gpControl(object):
 		self.gamepad = gamepad
 		if not gamepad:
 			self._get_gamepad()
+		self.last_state = [0, 0, 0, 0]
 			
+
 	def _get_gamepad(self):
 		"""Get a gamepad object."""
 		try:
 			self.gamepad = inputs.devices.gamepads[0]
 		except IndexError:
 			raise inputs.UnpluggedError("No gamepad found.")
+
 
 	def process_events(self):
 		"""Process available events."""
@@ -85,10 +85,12 @@ class gpControl(object):
 		return [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 
+
+
 	def process_event(self, event):
 		"""Process the event into a state."""
 		if event.ev_type == 'Sync':
-			return
+			return self.last_state
 		if event.ev_type == 'Misc':
 			return
 		key = event.ev_type + '-' + event.code
@@ -104,7 +106,9 @@ class gpControl(object):
 		if event.ev_type == 'Absolute':
 			self.old_abs_state[abbv] = self.abs_state[abbv]
 			self.abs_state[abbv] = event.state
-		return self.output_state(event.ev_type, abbv)
+		tmp = self.standardize(self.output_state(event.ev_type, abbv))
+		self.last_state = tmp
+		return tmp
 
 
 	def output_state(self, ev_type, abbv):
@@ -145,6 +149,7 @@ class gpControl(object):
 
 	def handle_unknown_event(self, event, key):
 		"""Deal with unknown events."""
+		print("UNKNOWN EVENT")
 		if event.ev_type == 'Key':
 			new_abbv = 'B' + str(self._other)
 			self.btn_state[new_abbv] = 0
@@ -158,105 +163,31 @@ class gpControl(object):
 
 		self.abbrevs[key] = new_abbv
 		self._other += 1
-
 		return self.abbrevs[key]
 
 
+	def standardize(self, keys):
+		#THE KEY POSITIONS I NEED FOR TAINING
+		xpo = ('HX', 1)
+		xz = ('HX', 0)
+		xno = ('HX', -1)
+		ypo = ('HY', 1)
+		yz = ('HY', 0)
+		yno = ('HY', -1)
 
-Lmotor = Motor(forward=26, backward=19)
-Rmotor = Motor(forward=13, backward=6)
+		#MULTIHOT ARRAY
+		#          L  F  R  B
+		pressed = [0, 0, 0, 0]
 
-
-last = []
-
-def rC(ctrl):
-	global last
-	speed = 1
-	#THERES MORE BUT I THINK THIS IS ALL I NEED
-	xpo = ('HX', 1)
-	xz = ('HX', 0)
-	xno = ('HX', -1)
-	ypo = ('HY', 1)
-	yz = ('HY', 0)
-	yno = ('HY', -1)
-	ao = ('E', 1)
-	az = ('E', 0)
-
-	if xpo in ctrl:
-		Lmotor.forward(speed)
-		Rmotor.stop()
-	if xno in ctrl:
-		Rmotor.forward(speed)
-		Lmotor.stop()
-	if yno in ctrl:
-		Rmotor.forward(speed)
-		Lmotor.forward(speed)
-	if ypo in ctrl:
-		Rmotor.backward(speed)
-		Lmotor.backward(speed)
-	if ao in ctrl:
-		print("click!")
-		snap()
-	# if ctrl[8] == 1:
-	# 	print("!!!!!!!!!!!!!!!AUTO PILOT ENGAGED!!!!!!!!!!!!!!!")
-	# 	autoPilot()
-	if xz in ctrl and xz not in last:
-		Lmotor.stop()
-		Rmotor.stop()
-	if yz in ctrl and yz not in last:
-		Lmotor.stop()
-		Rmotor.stop()
-	if yno in ctrl and xpo in ctrl:
-		Rmotor.forward(speed*0.6)
-		Lmotor.forward(speed)
-	if yno in ctrl and xno in ctrl:
-		Rmotor.forward(speed)
-		Lmotor.forward(speed*0.6)
-
-	last = ctrl
-	return 
+		#MAKE AN ARRAY FROM THE KEYS THAT ARE ACTUALLY PRESSED
+		if xpo in keys:
+			pressed[2] = 1
+		if xno in keys:
+			pressed[0] = 1
+		if yno in keys:
+			pressed[1] = 1
+		if ypo in keys:
+			pressed[3] = 1
 
 
-
-def snap():
-	file = datetime.datetime.now().strftime('%Y-%m-%d_%I:%M:%S%p') + ".jpeg"
-	pic = "streamer -q -s 128x128 -o images/" + file
-	#bw = "bw.cpp " + file
-	cmd = pic #+ "&&" + bw
-	os.system(cmd)
-	return
-
-
-
-
-def autoPilot():
-	cmd = "python3 Bumble2.py"
-	os.system(cmd)
-	print("!!!!!!!!!!!!!!!AUTO PILOT DISENGAGED!!!!!!!!!!!!!!!")
-	return
-
-
-
-
-def main():
-	"""Process all events forever."""
-	ref = []
-	jstest = gpControl()
-	while 1:
-		tmp = jstest.process_events()
-		#print(type(tmp), "main")
-		if type(tmp) == type(ref):
-			rC(tmp)
-
-
-
-
-
-
-if __name__ == "__main__":
-	main()
-
-# A0 - 127 = 0 is left joystick at center -127 is joystick all the way up and 127 is joystick all the way down
-
-# HY -1 is dpad up
-# HX -1 is dpad left
+		return pressed
