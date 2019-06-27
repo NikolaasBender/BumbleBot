@@ -42,8 +42,6 @@ def rC(ctrl):
 		Rmotor.stop()
 		Lmotor.stop()
 	
-
-	last = ctrl
 	return 
 
 
